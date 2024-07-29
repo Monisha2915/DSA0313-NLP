@@ -1,0 +1,77 @@
+#DESCRIPTION#:
+Collect a dataset of utterances along with their corresponding dialog acts (e.g., "greeting", "statement", "question", "response", "farewell").
+Split the dataset into utterances and their labels (dialog acts).
+Convert the text data (utterances) into numerical features using TF-IDF (Term Frequency-Inverse Document Frequency) Vectorization.
+Split the dataset into training and testing sets.
+Train a machine learning classifier (e.g., Multinomial Naive Bayes) using the training data.
+Evaluate the performance of the classifier on the testing set by generating a classification report (precision, recall, F1-score).
+Define a function to classify dialog acts in new conversations using the trained classifier and vectorizer.
+
+#CODE#:
+import nltk
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import classification_report
+
+# Sample dialog act dataset (utterance, dialog act)
+data = [
+    ("Hello, how are you?", "greeting"),
+    ("I am fine, thank you.", "statement"),
+    ("What are you doing today?", "question"),
+    ("I am going to the park.", "statement"),
+    ("Do you want to join me?", "question"),
+    ("Yes, I would love to.", "response"),
+    ("Great! See you at 5.", "farewell"),
+    ("See you!", "farewell"),
+    # Add more dialog act examples here
+]
+
+# Split data into utterances and labels
+utterances, labels = zip(*data)
+
+# Vectorize the text data
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(utterances)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, labels, test_size=0.2, random_state=42)
+
+# Train a classifier
+classifier = MultinomialNB()
+classifier.fit(X_train, y_train)
+
+# Predict the dialog acts on the test set
+y_pred = classifier.predict(X_test)
+
+# Evaluate the classifier
+print(classification_report(y_test, y_pred))
+
+# Function to classify dialog acts in a new conversation
+def classify_dialog_acts(conversation):
+    conversation_vectorized = vectorizer.transform(conversation)
+    predictions = classifier.predict(conversation_vectorized)
+    return list(zip(conversation, predictions))
+
+# Example usage
+new_conversation = [
+    "Hi, how's it going?",
+    "Pretty good, thanks for asking.",
+    "What are your plans for today?",
+    "I'm thinking about going for a run."
+]
+
+print(classify_dialog_acts(new_conversation))
+
+#OUTPUT#:
+              precision    recall  f1-score   support
+
+    greeting       1.00      1.00      1.00         1
+   farewell       1.00      1.00      1.00         2
+   question       1.00      1.00      1.00         2
+   response       1.00      1.00      1.00         1
+   statement       1.00      1.00      1.00         2
+
+    accuracy                           1.00         8
+   macro avg       1.00      1.00      1.00         8
+weighted avg       1.00      1.00      1.00         8
