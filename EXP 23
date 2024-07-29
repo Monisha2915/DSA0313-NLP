@@ -1,0 +1,51 @@
+#DESCRIPTION#:
+Initialize and Load Pre-trained Model
+Load the pre-trained paraphrase-MiniLM-L6-v2 model from the sentence-transformers library.
+Input the text to be evaluated for coherence.
+Split the input text into sentences using a delimiter (e.g., . for period followed by a space)
+For each sentence, generate its embedding using the loaded model.
+Initialize an empty list to store the similarity scores between consecutive sentences.
+Compute the cosine similarity between their embeddings.
+Append the similarity score to the similarity list.
+Compute the average of the similarity scores stored in the similarity list.
+Output the average similarity score as the coherence score of the text.
+
+#CODE#:
+from sentence_transformers import SentenceTransformer, util
+import numpy as np
+
+def calculate_coherence(text):
+    # Load the pre-trained model
+    model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
+    
+    # Split text into sentences
+    sentences = text.split('. ')
+    
+    # Get sentence embeddings
+    embeddings = model.encode(sentences)
+    
+    # Calculate pairwise cosine similarity between consecutive sentences
+    similarities = []
+    for i in range(len(embeddings) - 1):
+        similarity = util.pytorch_cos_sim(embeddings[i], embeddings[i + 1]).item()
+        similarities.append(similarity)
+    
+    # Compute the average similarity score
+    average_similarity = np.mean(similarities)
+    
+    return average_similarity
+
+# Example text
+text = ("Artificial intelligence and machine learning are rapidly advancing fields. "
+        "These technologies are being applied in a wide range of industries. "
+        "From healthcare to finance, AI is transforming how we work and live. "
+        "However, there are also concerns about the ethical implications of AI. "
+        "Ensuring that AI systems are transparent and fair is crucial.")
+
+coherence_score = calculate_coherence(text)
+print(f"Coherence Score: {coherence_score:.2f}")
+
+#OUTPUT#:
+Coherence Score: 0.68
+
+
