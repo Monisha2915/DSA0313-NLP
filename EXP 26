@@ -1,0 +1,39 @@
+#DESCRIPTION#:
+Use the tokenizer to convert the English text into tokens that the model can understand.
+Set the return_tensors='pt' parameter to get PyTorch tensors.
+Apply padding to ensure consistent tensor dimensions.
+Pass the tokenized input to the model to generate translated tokens.
+Use the tokenizer to convert the translated tokens back into human-readable text.
+Set skip_special_tokens=True to remove any special tokens from the output.
+Call the translate_text function with the example English text.
+Print the original English text and the translated French text.
+
+#CODE#:
+from transformers import MarianMTModel, MarianTokenizer
+
+# Load pre-trained MarianMT model and tokenizer for English to French translation
+model_name = 'Helsinki-NLP/opus-mt-en-fr'
+tokenizer = MarianTokenizer.from_pretrained(model_name)
+model = MarianMTModel.from_pretrained(model_name)
+
+def translate_text(text):
+    # Tokenize the input text
+    tokens = tokenizer(text, return_tensors='pt', padding=True)
+    
+    # Perform the translation
+    translated_tokens = model.generate(**tokens)
+    
+    # Decode the translated tokens
+    translated_text = tokenizer.decode(translated_tokens[0], skip_special_tokens=True)
+    
+    return translated_text
+
+# Example usage
+english_text = "Hello, how are you?"
+french_text = translate_text(english_text)
+print(f"English: {english_text}")
+print(f"French: {french_text}")
+
+#OUTPUT#:
+english_text = "Hello, how are you?"
+French: "Bonjour, comment ça va ?"
