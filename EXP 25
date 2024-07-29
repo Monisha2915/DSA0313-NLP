@@ -1,0 +1,32 @@
+#DESCRIPTION#:
+Import the openai library to interact with the GPT-3 API.
+Assign your OpenAI API key to the openai.api_key variable to authenticate your requests.
+Create a string variable prompt that contains the initial text or query you want GPT-3 to complete or respond to.
+engine: Specify which GPT-3 model to use (e.g., "text-davinci-003").
+prompt: The text prompt that you want to complete or extend.
+max_tokens: The maximum number of tokens (words or pieces of words) to generate in the response.
+Access the generated text from the response object using response.choices[0].text.
+Print the generated text after stripping any leading or trailing whitespace.
+
+#CODE#:
+import openai
+
+# Set your OpenAI API key
+openai.api_key = 'your-api-key-here'
+
+# Define the prompt
+prompt = "Once upon a time, in a land far, far away,"
+
+# Generate a response from GPT-3
+response = openai.Completion.create(
+    engine="text-davinci-003",  # You can use different engines like "davinci", "curie", etc.
+    prompt=prompt,
+    max_tokens=100  # Adjust the max_tokens parameter as needed
+)
+
+# Print the generated text
+print(response.choices[0].text.strip())
+
+#OUTPUT#:
+prompt = "Once upon a time, in a land far, far away,"
+Once upon a time, in a land far, far away, there was a magical kingdom ruled by a kind and wise queen. Her people adored her for her fairness and the prosperity she brought to the land. The queen had a secret garden where the most beautiful flowers grew, and it was said that anyone who visited the garden would have their deepest wishes granted. One day, a young traveler stumbled upon this hidden paradise, unaware of the enchantment that awaited him. His journey was about to take an extraordinary turn...
